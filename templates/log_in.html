@@ -1,7 +1,16 @@
 {%extends 'base.html'%}
 {%block navb%}
 <button><a href="{{url_for('register')}}">Register</a></button>
+{%endblock%}
+{%block form%}
+<form action="">
 
+    <label for="username">username</label>
+    <input type="text"><br>
+    <label for="password">password</label>
+    <input type="password"><br>
+    <button><a href="{{url_for('log_out')}}">Log in</a></button>
+</form>
 {%endblock%}
 
 

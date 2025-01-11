@@ -2,3 +2,18 @@
 {%block navb%}
 <button><a href="{{url_for('log_in')}}">Log in</a></button>
 {%endblock%}
+{%block form%}
+<form action="">
+    <label for="nome">nome</label>
+    <input type="text"><br>
+    <label for="cognome">cogome</label>
+    <input type="text"><br>
+    <label for="username">username</label>
+    <input type="text"><br>
+    <label for="password">password</label>
+    <input type="password"><br>
+    <label for="confirmpassword">confirmpassword</label>
+    <input type="password"><br>
+    <button><a href="{{url_for('home')}}">register</a></button>
+</form>
+{%endblock%}
