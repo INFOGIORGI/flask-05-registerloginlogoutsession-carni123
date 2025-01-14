@@ -3,13 +3,13 @@
 <button><a href="{{url_for('register')}}">Register</a></button>
 {%endblock%}
 {%block form%}
-<form action="">
+<form action="/register" method="POST">
 
     <label for="username">username</label>
     <input type="text"><br>
     <label for="password">password</label>
     <input type="password"><br>
-    <button><a href="{{url_for('log_out')}}">Log in</a></button>
+    <input type="submit" value="Log in">
 </form>
 {%endblock%}
 

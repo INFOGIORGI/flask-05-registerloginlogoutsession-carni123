@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request,redirect
 from flask import render_template
 from flask_mysqldb import MySQL
 
@@ -16,9 +16,31 @@ mysql=MySQL(app)
 def home():
     return render_template("home.html",titolo="Register")
 
-@app.route("/register")
+@app.route("/register/",methods=["GET","POST"])
 def register():
-    return render_template("register.html",titolo="Register")
+    if request.method=="GET":
+        return render_template("register.html",titolo="Register")
+    else:
+        cursor=mysql.connection.cursor()
+        query_select="""SELECT username from users where username=%s"""
+        nome=request.form.get("nome")
+        cognome=request.form.get("cognome")
+        username=request.form.get("username")
+        password=request.form.get("password")
+        confpassword=request.form.get("confirmpassword")
+        
+        if password==confpassword:
+            cursor.execute(query_select,(username,))
+            usr=cursor.fetchall()
+            if len(usr)==0:
+                query_insert="""INSERT into users VALUES(%s,%s,%s,%s )"""
+                cursor.execute(query_insert,(username,password,nome,cognome))
+                #cursor.fetchall()
+                mysql.connection.commit()
+                return redirect("/")
+            else:
+                return render_template("register.html", titolo="errore")
+
 
 @app.route("/log_in")
 def log_in():

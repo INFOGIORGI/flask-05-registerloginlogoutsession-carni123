@@ -3,17 +3,17 @@
 <button><a href="{{url_for('log_in')}}">Log in</a></button>
 {%endblock%}
 {%block form%}
-<form action="">
+<form action="/register/", method="post">
     <label for="nome">nome</label>
-    <input type="text"><br>
+    <input type="text" name="nome"><br>
     <label for="cognome">cogome</label>
-    <input type="text"><br>
+    <input type="text" name="cognome"><br>
     <label for="username">username</label>
-    <input type="text"><br>
+    <input type="text" name="username"><br>
     <label for="password">password</label>
-    <input type="password"><br>
+    <input type="password" name="password"><br>
     <label for="confirmpassword">confirmpassword</label>
-    <input type="password"><br>
-    <button><a href="{{url_for('home')}}">register</a></button>
+    <input type="password" name="confirmpassword"><br>
+    <input type="submit" value="Register">
 </form>
 {%endblock%}
