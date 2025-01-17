@@ -1,7 +1,8 @@
 from flask import Flask, request,redirect
 from flask import render_template
 from flask_mysqldb import MySQL
-
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask import flash
 app = Flask(__name__)
 
 app.config['MYSQL_HOST']="138.41.20.102"
@@ -11,15 +12,16 @@ app.config['MYSQL_PASSWORD']="ospite"
 app.config['MYSQL_DB']="w3schools"
 
 mysql=MySQL(app)
+app.secret_key = 'your-secret-key-here'
 
 @app.route("/")
 def home():
-    return render_template("home.html",titolo="Register")
+    return render_template("home.html")
 
 @app.route("/register/",methods=["GET","POST"])
 def register():
     if request.method=="GET":
-        return render_template("register.html",titolo="Register")
+        return render_template("register.html")
     else:
         cursor=mysql.connection.cursor()
         query_select="""SELECT username from users where username=%s"""
@@ -34,21 +36,40 @@ def register():
             usr=cursor.fetchall()
             if len(usr)==0:
                 query_insert="""INSERT into users VALUES(%s,%s,%s,%s )"""
-                cursor.execute(query_insert,(username,password,nome,cognome))
-                #cursor.fetchall()
+                cursor.execute(query_insert,(username,generate_password_hash(password),nome,cognome))
                 mysql.connection.commit()
                 return redirect("/")
             else:
-                return render_template("register.html", titolo="errore")
+                flash("username gia presente")
+                return redirect("/register/")
+        else:
+            flash("password non coincidono")
+            return redirect("/register/")
 
 
-@app.route("/log_in")
+@app.route("/log_in/", methods=["GET","POST"])
 def log_in():
-    return render_template("log_in.html",titolo="Log in")
+    if request.method == "GET":
+        return render_template("log_in.html")
+    else:
+        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        username=request.form.get("username")
+        password=request.form.get("password")
+        cursor=mysql.connection.cursor()
+        query="""SELECT username,password FROM users WHERE username=%s and password=%s"""
+        cursor.execute(query,check_password_hash(password))
+        data=cursor.fetchall()
+        
+        if len(data) == 0:
+            render_template("log_in.html", errore="UTENTE NON TROVATO")
+        else:
+            redirect("/personale")
 
+
+        
 @app.route("/personale")
 def log_out():
-    return render_template("personale.html",titolo="Personale")
+    return render_template("personale.html")
 
 
 app.run(debug=True)
