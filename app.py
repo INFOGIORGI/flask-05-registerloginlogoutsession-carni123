@@ -56,8 +56,9 @@ def log_in():
         username=request.form.get("username")
         password=request.form.get("password")
         cursor=mysql.connection.cursor()
+        print("AAAAA")
         query="""SELECT username,password FROM users WHERE username=%s and password=%s"""
-        cursor.execute(query,check_password_hash(password))
+        cursor.execute(query,check_password_hash(generate_password_hash(password),password))
         data=cursor.fetchall()
         
         if len(data) == 0:
