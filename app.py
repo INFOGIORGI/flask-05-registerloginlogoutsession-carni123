@@ -52,19 +52,22 @@ def log_in():
     if request.method == "GET":
         return render_template("log_in.html")
     else:
-        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         username=request.form.get("username")
         password=request.form.get("password")
         cursor=mysql.connection.cursor()
-        print("AAAAA")
-        query="""SELECT username,password FROM users WHERE username=%s and password=%s"""
-        cursor.execute(query,check_password_hash(generate_password_hash(password),password))
+        query="""SELECT * FROM users WHERE username=%s """
+        cursor.execute(query,(username,))
         data=cursor.fetchall()
         
         if len(data) == 0:
-            render_template("log_in.html", errore="UTENTE NON TROVATO")
+            return render_template("log_in.html", errore=username+" "+password)
         else:
-            redirect("/personale")
+            password_db=data[0][1]
+            if check_password_hash(password_db,password):
+                return redirect("/personale")
+            else:
+                return redirect("/log_in/")
+
 
 
         
